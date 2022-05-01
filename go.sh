@@ -1,4 +1,4 @@
-echo start...
+echo "start..."
 
 cd /usr/local
 
@@ -20,6 +20,7 @@ cat export_go.txt >> ~/.bashrc
 
 source ~/.bashrc
 
-go env -w GOPROXY=https://goproxy.io,direct
+go env -w GOPROXY=https://goproxy.cn,https://goproxy.io,direct
 go env -w GO111MODULE=on
 
+echo "end"
