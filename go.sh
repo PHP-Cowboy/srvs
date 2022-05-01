@@ -2,7 +2,7 @@ echo start...
 
 cd /usr/local
 
-if  [ -e /usr/local/go1.18.1.linux-amd64.tar.gz ]；then   #这里是判断语句，-e表示进行比较结果为真则存在
+if  [ -e /usr/local/go1.18.1.linux-amd64.tar.gz ]; then   #这里是判断语句，-e表示进行比较结果为真则存在
 
 echo "文件存在"
 
