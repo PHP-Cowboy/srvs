@@ -1,5 +1,3 @@
-go mod init shop-srvs
-
 go mod tidy
 
 go build main.go
