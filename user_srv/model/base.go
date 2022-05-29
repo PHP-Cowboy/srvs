@@ -13,7 +13,7 @@ func GetOptions(tableName string) string {
 
 type Base struct {
 	Id       uint64         `gorm:"primaryKey;type:int(11) unsigned AUTO_INCREMENT;comment:id"`
-	CreateAt time.Time      `gorm:"type:datetime;not null;comment:创建时间"`
-	UpdateAt time.Time      `gorm:"type:datetime;not null;comment:更新时间"`
+	CreateAt time.Time      `gorm:"autoCreateTime;type:datetime;not null;comment:创建时间"`
+	UpdateAt time.Time      `gorm:"autoUpdateTime;type:datetime;not null;comment:更新时间"`
 	DeleteAt gorm.DeletedAt `gorm:"type:datetime;index;comment:删除时间"`
 }

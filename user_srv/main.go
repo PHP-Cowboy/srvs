@@ -1,46 +1,30 @@
 package main
 
 import (
-	"crypto/sha512"
+	"flag"
 	"fmt"
-	"github.com/anaskhan96/go-password-encoder"
-	"strings"
+	"google.golang.org/grpc"
+	"net"
+	"shop-srvs/user_srv/handler"
+	"shop-srvs/user_srv/proto/proto"
 )
 
-type Carer interface {
-	run()
-	start()
-}
-
-type BYD struct{}
-
-func (b *BYD) run() {
-	fmt.Println("run")
-}
-
-func (b BYD) start() {
-	fmt.Println("start")
-}
-
-func GeneratePwd(pwd string) {
-
-	options := &password.Options{16, 100, 32, sha512.New}
-	salt, encodedPwd := password.Encode(pwd, options)
-
-	newPwd := fmt.Sprintf("pbkdf2-sha512$%s$%s", salt, encodedPwd)
-
-	fmt.Println(salt)
-	fmt.Println(encodedPwd)
-	fmt.Println(newPwd)
-
-	pwdSlice := strings.Split(newPwd, "$")
-
-	fmt.Println(pwdSlice)
-
-	check := password.Verify(pwd, pwdSlice[1], pwdSlice[2], options)
-	fmt.Println(check) // true
-}
-
 func main() {
-	GeneratePwd("sgagrrgweg")
+	ip := flag.String("ip", "0.0.0.0", "IP地址")
+	port := flag.Int("port", 50051, "端口号")
+
+	server := grpc.NewServer()
+	proto.RegisterUserServer(server, &handler.UserServer{})
+
+	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%v", *ip, *port))
+
+	if err != nil {
+		panic("failed to listen:" + err.Error())
+	}
+
+	err = server.Serve(lis)
+
+	if err != nil {
+		panic("failed to start grpc:" + err.Error())
+	}
 }
