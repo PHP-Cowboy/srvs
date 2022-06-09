@@ -4,7 +4,7 @@ type MysqlConfig struct {
 	Host     string `mapstructure:"host" json:"host"`
 	Port     int    `mapstructure:"port" json:"port"`
 	Name     string `mapstructure:"name"`
-	USer     string `mapstructure:"user"`
+	User     string `mapstructure:"user"`
 	Password string `mapstructure:"password"`
 }
 

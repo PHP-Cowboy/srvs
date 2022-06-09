@@ -30,10 +30,10 @@ func main() {
 	//	PassWord: "123456",
 	//})
 
-	//list, err := userClient.GetUserList(context.Background(), &proto.PageInfo{
-	//	PSize: 10,
-	//	Pn:    1,
-	//})
+	list, err := userClient.GetUserList(context.Background(), &proto.PageInfo{
+		PSize: 10,
+		Pn:    1,
+	})
 
 	//list, err := userClient.GetUserByMobile(context.Background(), &proto.MobileRequest{Mobile: "15700188888 "})
 
@@ -46,12 +46,13 @@ func main() {
 	//	Gender:   1,
 	//})
 
-	list, err := userClient.CheckPassWord(context.Background(), &proto.PasswordCheckInfo{
-		PassWord:          "212112",
-		EncryptedPassWord: "pbkdf2-sha512$oVj8oVEEQb062eBA$7ab8439632fbb75e9fd50390d7cb3d2d1affcb5b03a4983e879e0913a28b9156",
-	})
+	//list, err := userClient.CheckPassWord(context.Background(), &proto.PasswordCheckInfo{
+	//	PassWord:          "212112",
+	//	EncryptedPassWord: "pbkdf2-sha512$oVj8oVEEQb062eBA$7ab8439632fbb75e9fd50390d7cb3d2d1affcb5b03a4983e879e0913a28b9156",
+	//})
+
 	if err != nil {
-		panic("failed")
+		panic(err)
 	}
 	fmt.Println(1111)
 	fmt.Println(list)
