@@ -1,0 +1,6 @@
+mysql:
+  host: '114.116.88.12'
+  port: 3306
+  name: 'user'
+  user: 'root'
+  password: 'root'
