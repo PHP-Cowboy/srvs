@@ -1,6 +1,8 @@
 package model
 
 import (
+	"database/sql/driver"
+	"encoding/json"
 	"gorm.io/gorm"
 	"time"
 )
@@ -11,9 +13,21 @@ func GetOptions(tableName string) string {
 	return "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci comment '" + tableName + "'"
 }
 
-type Base struct {
-	Id       uint64         `gorm:"primaryKey;type:int(11) unsigned AUTO_INCREMENT;comment:id"`
-	CreateAt time.Time      `gorm:"autoCreateTime;type:datetime;not null;comment:创建时间"`
-	UpdateAt time.Time      `gorm:"autoUpdateTime;type:datetime;not null;comment:更新时间"`
-	DeleteAt gorm.DeletedAt `gorm:"type:datetime;index;comment:删除时间"`
+type BaseModel struct {
+	ID        int32          `gorm:"primarykey;type:int" json:"id"`
+	CreatedAt time.Time      `gorm:"column:add_time" json:"-"`
+	UpdatedAt time.Time      `gorm:"column:update_time" json:"-"`
+	DeletedAt gorm.DeletedAt `json:"-"`
+	IsDeleted bool           `json:"-"`
+}
+
+type GormList []string
+
+func (g GormList) Value() (driver.Value, error) {
+	return json.Marshal(g)
+}
+
+// 实现 sql.Scanner 接口，Scan 将 value 扫描至 Jsonb
+func (g *GormList) Scan(value interface{}) error {
+	return json.Unmarshal(value.([]byte), &g)
 }

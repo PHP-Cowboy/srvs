@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	dsn := "root:root@tcp(114.116.88.12)/user?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:8!yJRAJwhH6t2xaK@tcp(114.116.88.12)/goods?charset=utf8mb4&parseTime=True&loc=Local"
 
 	logger := logger2.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
@@ -35,6 +35,10 @@ func main() {
 		panic(err)
 	}
 
-	_ = db.Set(model.TableOptions, model.GetOptions("用户表")).AutoMigrate()
+	_ = db.Set(model.TableOptions, model.GetOptions("商品分类表")).AutoMigrate(&model.Category{})
+	_ = db.Set(model.TableOptions, model.GetOptions("品牌")).AutoMigrate(&model.Brands{})
+	_ = db.Set(model.TableOptions, model.GetOptions("商品品牌分类中间表")).AutoMigrate(&model.GoodsCategoryBrand{})
+	_ = db.Set(model.TableOptions, model.GetOptions("banner")).AutoMigrate(&model.Banner{})
+	_ = db.Set(model.TableOptions, model.GetOptions("商品表")).AutoMigrate(&model.Goods{})
 
 }
