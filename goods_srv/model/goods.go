@@ -28,9 +28,9 @@ type GoodsCategoryBrand struct {
 	Brands   Brands
 }
 
-func (GoodsCategoryBrand) TableName() string {
-	return "goodscategorybrand"
-}
+//func (GoodsCategoryBrand) TableName() string {
+//	return "tb_goodscategorybrand"
+//}
 
 //banner
 type Banner struct {

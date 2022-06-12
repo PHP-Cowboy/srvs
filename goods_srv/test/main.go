@@ -8,17 +8,17 @@ import (
 )
 
 var (
-	conn       *grpc.ClientConn
-	userClient proto.UserClient
+	conn        *grpc.ClientConn
+	goodsClient proto.GoodsClient
 )
 
 func Init() {
 	var err error
-	conn, err = grpc.Dial("localhost:50051", grpc.WithInsecure())
+	conn, err = grpc.Dial("192.168.0.101:50051", grpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}
-	userClient = proto.NewUserClient(conn)
+	goodsClient = proto.NewGoodsClient(conn)
 }
 
 func main() {
@@ -30,9 +30,9 @@ func main() {
 	//	PassWord: "123456",
 	//})
 
-	list, err := userClient.GetUserList(context.Background(), &proto.PageInfo{
-		PSize: 10,
-		Pn:    1,
+	list, err := goodsClient.BrandList(context.Background(), &proto.BrandFilterRequest{
+		Pages:       1,
+		PagePerNums: 10,
 	})
 
 	//list, err := userClient.GetUserByMobile(context.Background(), &proto.MobileRequest{Mobile: "15700188888 "})

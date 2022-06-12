@@ -21,7 +21,7 @@ import (
 
 func main() {
 	ip := flag.String("ip", "0.0.0.0", "IP地址")
-	port := flag.Int("port", 0, "端口号")
+	port := flag.Int("port", 50051, "端口号")
 
 	initialize.InitLogger()
 	initialize.InitConfig()
