@@ -28,7 +28,7 @@ func main() {
 	initialize.InitMysql()
 
 	server := grpc.NewServer()
-	proto.RegisterUserServer(server, &handler.UserServer{})
+	proto.RegisterGoodsServer(server, &handler.GoodsServer{})
 
 	if *port == 0 {
 		*port = utils.GetFreePort()
@@ -57,7 +57,7 @@ func main() {
 	}
 
 	check := &api.AgentServiceCheck{
-		GRPC:                           fmt.Sprintf("192.168.0.101:%d", *port),
+		GRPC:                           fmt.Sprintf("%s:%d", global.ServerConfig.Host, *port),
 		Timeout:                        "5s",
 		Interval:                       "5s",
 		DeregisterCriticalServiceAfter: "10s",
@@ -65,11 +65,11 @@ func main() {
 
 	//生成注册对象
 	registration := new(api.AgentServiceRegistration)
-	registration.Name = "user-srv"
+	registration.Name = global.ServerConfig.Name
 	registration.ID = fmt.Sprintf("%s", uuid.NewV4())
 	registration.Port = *port
-	registration.Tags = []string{"user", "srv"}
-	registration.Address = "192.168.0.101"
+	registration.Tags = global.ServerConfig.Tags
+	registration.Address = global.ServerConfig.Host
 	registration.Check = check
 
 	err = client.Agent().ServiceRegister(registration)
