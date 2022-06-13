@@ -15,7 +15,7 @@ service Goods{
   rpc GetGoodsDetail(GoodInfoRequest) returns(GoodsInfoResponse);
 
   //商品分类
-  rpc GetAllCategorysList(google.protobuf.Empty) returns(CategoryListResponse); //获取所有的分类
+  rpc GetAllCategoryList(google.protobuf.Empty) returns(CategoryListResponse); //获取所有的分类
   //获取子分类
   rpc GetSubCategory(CategoryListRequest) returns(SubCategoryListResponse);
   rpc CreateCategory(CategoryInfoRequest) returns(CategoryInfoResponse); //新建分类信息

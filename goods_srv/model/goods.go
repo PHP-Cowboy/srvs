@@ -1,6 +1,6 @@
 package model
 
-//商品分类表
+//https://zhuanlan.zhihu.com/p/73997266
 type Category struct {
 	BaseModel
 	Name             string      `gorm:"type:varchar(20);not null" json:"name"`
@@ -11,14 +11,12 @@ type Category struct {
 	IsTab            bool        `gorm:"default:false;not null" json:"is_tab"`
 }
 
-//品牌
 type Brands struct {
 	BaseModel
 	Name string `gorm:"type:varchar(20);not null"`
 	Logo string `gorm:"type:varchar(200);default:'';not null"`
 }
 
-//商品品牌分类中间表
 type GoodsCategoryBrand struct {
 	BaseModel
 	CategoryID int32 `gorm:"type:int;index:idx_category_brand,unique"`
@@ -28,11 +26,10 @@ type GoodsCategoryBrand struct {
 	Brands   Brands
 }
 
-//func (GoodsCategoryBrand) TableName() string {
-//	return "tb_goodscategorybrand"
-//}
+func (GoodsCategoryBrand) TableName() string {
+	return "goodscategorybrand"
+}
 
-//banner
 type Banner struct {
 	BaseModel
 	Image string `gorm:"type:varchar(200);not null"`
@@ -40,7 +37,6 @@ type Banner struct {
 	Index int32  `gorm:"type:int;default:1;not null"`
 }
 
-//商品表
 type Goods struct {
 	BaseModel
 

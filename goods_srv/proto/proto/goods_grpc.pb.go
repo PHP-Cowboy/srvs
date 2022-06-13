@@ -28,7 +28,7 @@ type GoodsClient interface {
 	UpdateGoods(ctx context.Context, in *CreateGoodsInfo, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetGoodsDetail(ctx context.Context, in *GoodInfoRequest, opts ...grpc.CallOption) (*GoodsInfoResponse, error)
 	//商品分类
-	GetAllCategorysList(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CategoryListResponse, error)
+	GetAllCategoryList(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CategoryListResponse, error)
 	//获取子分类
 	GetSubCategory(ctx context.Context, in *CategoryListRequest, opts ...grpc.CallOption) (*SubCategoryListResponse, error)
 	CreateCategory(ctx context.Context, in *CategoryInfoRequest, opts ...grpc.CallOption) (*CategoryInfoResponse, error)
@@ -115,9 +115,9 @@ func (c *goodsClient) GetGoodsDetail(ctx context.Context, in *GoodInfoRequest, o
 	return out, nil
 }
 
-func (c *goodsClient) GetAllCategorysList(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CategoryListResponse, error) {
+func (c *goodsClient) GetAllCategoryList(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CategoryListResponse, error) {
 	out := new(CategoryListResponse)
-	err := c.cc.Invoke(ctx, "/Goods/GetAllCategorysList", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/Goods/GetAllCategoryList", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -290,7 +290,7 @@ type GoodsServer interface {
 	UpdateGoods(context.Context, *CreateGoodsInfo) (*emptypb.Empty, error)
 	GetGoodsDetail(context.Context, *GoodInfoRequest) (*GoodsInfoResponse, error)
 	//商品分类
-	GetAllCategorysList(context.Context, *emptypb.Empty) (*CategoryListResponse, error)
+	GetAllCategoryList(context.Context, *emptypb.Empty) (*CategoryListResponse, error)
 	//获取子分类
 	GetSubCategory(context.Context, *CategoryListRequest) (*SubCategoryListResponse, error)
 	CreateCategory(context.Context, *CategoryInfoRequest) (*CategoryInfoResponse, error)
@@ -338,8 +338,8 @@ func (UnimplementedGoodsServer) UpdateGoods(context.Context, *CreateGoodsInfo) (
 func (UnimplementedGoodsServer) GetGoodsDetail(context.Context, *GoodInfoRequest) (*GoodsInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGoodsDetail not implemented")
 }
-func (UnimplementedGoodsServer) GetAllCategorysList(context.Context, *emptypb.Empty) (*CategoryListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllCategorysList not implemented")
+func (UnimplementedGoodsServer) GetAllCategoryList(context.Context, *emptypb.Empty) (*CategoryListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllCategoryList not implemented")
 }
 func (UnimplementedGoodsServer) GetSubCategory(context.Context, *CategoryListRequest) (*SubCategoryListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSubCategory not implemented")
@@ -513,20 +513,20 @@ func _Goods_GetGoodsDetail_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Goods_GetAllCategorysList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Goods_GetAllCategoryList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GoodsServer).GetAllCategorysList(ctx, in)
+		return srv.(GoodsServer).GetAllCategoryList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/Goods/GetAllCategorysList",
+		FullMethod: "/Goods/GetAllCategoryList",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GoodsServer).GetAllCategorysList(ctx, req.(*emptypb.Empty))
+		return srv.(GoodsServer).GetAllCategoryList(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -869,8 +869,8 @@ var Goods_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Goods_GetGoodsDetail_Handler,
 		},
 		{
-			MethodName: "GetAllCategorysList",
-			Handler:    _Goods_GetAllCategorysList_Handler,
+			MethodName: "GetAllCategoryList",
+			Handler:    _Goods_GetAllCategoryList_Handler,
 		},
 		{
 			MethodName: "GetSubCategory",

@@ -37,8 +37,8 @@ func InitMysql() {
 	var err error
 	global.DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   "tb_", // 表名前缀，`User` 的表名应该是 `t_users`
-			SingularTable: true,  // 使用单数表名，启用该选项，此时，`User` 的表名应该是 `t_user`
+			//TablePrefix:   "tb_", // 表名前缀，`User` 的表名应该是 `t_users`
+			SingularTable: true, // 使用单数表名，启用该选项，此时，`User` 的表名应该是 `t_user`
 		},
 		Logger: logger,
 	})
