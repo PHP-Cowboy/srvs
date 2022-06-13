@@ -4,8 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"net"
+	"os"
+	"os/signal"
 	"shop-srvs/user_srv/global"
 	"shop-srvs/user_srv/utils"
+	"syscall"
 
 	"github.com/hashicorp/consul/api"
 	uuid "github.com/satori/go.uuid"
@@ -57,19 +60,20 @@ func main() {
 	}
 
 	check := &api.AgentServiceCheck{
-		GRPC:                           fmt.Sprintf("192.168.0.101:%d", *port),
+		GRPC:                           fmt.Sprintf("%s:%d", global.ServerConfig.Host, *port),
 		Timeout:                        "5s",
 		Interval:                       "5s",
 		DeregisterCriticalServiceAfter: "10s",
 	}
 
 	//生成注册对象
+	serviceId := fmt.Sprintf("%s", uuid.NewV4())
 	registration := new(api.AgentServiceRegistration)
 	registration.Name = "user-srv"
-	registration.ID = fmt.Sprintf("%s", uuid.NewV4())
+	registration.ID = serviceId
 	registration.Port = *port
 	registration.Tags = []string{"user", "srv"}
-	registration.Address = "192.168.0.101"
+	registration.Address = global.ServerConfig.Host
 	registration.Check = check
 
 	err = client.Agent().ServiceRegister(registration)
@@ -77,9 +81,19 @@ func main() {
 		panic(err)
 	}
 
-	err = server.Serve(lis)
+	go func() {
+		err = server.Serve(lis)
 
-	if err != nil {
-		panic("failed to start grpc:" + err.Error())
+		if err != nil {
+			panic("failed to start grpc:" + err.Error())
+		}
+	}()
+
+	quit := make(chan os.Signal)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	if err = client.Agent().ServiceDeregister(serviceId); err != nil {
+		zap.S().Info("注销失败")
 	}
+	zap.S().Info("注销成功")
 }
