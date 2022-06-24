@@ -8,9 +8,9 @@ import (
 	"os/signal"
 	"shop-srvs/goods_srv/global"
 	"shop-srvs/goods_srv/utils"
+	"shop-srvs/goods_srv/utils/register/consul"
 	"syscall"
 
-	"github.com/hashicorp/consul/api"
 	uuid "github.com/satori/go.uuid"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -47,38 +47,16 @@ func main() {
 	//服务注册
 	grpc_health_v1.RegisterHealthServer(server, health.NewServer())
 
-	consulInfo := global.ServerConfig.ConsulInfo
+	serverInfo := global.ServerConfig
 
-	//健康检查
-	cfg := api.DefaultConfig()
-	cfg.Address = fmt.Sprintf("%s:%d", consulInfo.Host, consulInfo.Port)
-
-	client, err := api.NewClient(cfg)
-
-	if err != nil {
-		panic(err)
-	}
-
-	check := &api.AgentServiceCheck{
-		GRPC:                           fmt.Sprintf("%s:%d", global.ServerConfig.Host, *port),
-		Timeout:                        "5s",
-		Interval:                       "5s",
-		DeregisterCriticalServiceAfter: "10s",
-	}
-
-	//生成注册对象
 	serviceId := fmt.Sprintf("%s", uuid.NewV4())
-	registration := new(api.AgentServiceRegistration)
-	registration.Name = global.ServerConfig.Name
-	registration.ID = serviceId
-	registration.Port = *port
-	registration.Tags = global.ServerConfig.Tags
-	registration.Address = global.ServerConfig.Host
-	registration.Check = check
 
-	err = client.Agent().ServiceRegister(registration)
+	registryClient := consul.NewRegistryClient(serverInfo.ConsulInfo.Host, serverInfo.ConsulInfo.Port)
+
+	err = registryClient.Register(serverInfo.Host, *port, serverInfo.Name, serverInfo.Tags, serviceId)
+
 	if err != nil {
-		panic(err)
+		zap.S().Panic("服务注册失败:", err.Error())
 	}
 
 	go func() {
@@ -92,7 +70,7 @@ func main() {
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	if err = client.Agent().ServiceDeregister(serviceId); err != nil {
+	if err = registryClient.DeRegister(serviceId); err != nil {
 		zap.S().Info("注销失败")
 	}
 	zap.S().Info("注销成功")
