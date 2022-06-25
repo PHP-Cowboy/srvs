@@ -55,7 +55,7 @@ func main() {
 
 	err = registryClient.Register(serverCfg.Host, *port, serverCfg.Name, serverCfg.Tags, serviceId)
 	if err != nil {
-		zap.S().Panicf("")
+		zap.S().Panicf("服务注册失败：", err.Error())
 	}
 
 	go func() {
