@@ -19,14 +19,12 @@ type InventoryServer struct {
 
 func (i *InventoryServer) SetInv(ctx context.Context, req *proto.GoodsInvInfo) (*emptypb.Empty, error) {
 	var inv model.Inventory
-	result := global.DB.Where(&model.Inventory{Goods: req.GoodsId}).First(&inv)
-	if result.Error != nil {
-		return nil, result.Error
-	}
+	global.DB.Where(&model.Inventory{Goods: req.GoodsId}).First(&inv)
+
 	inv.Goods = req.GoodsId
 	inv.Stocks = req.Num
 
-	result = global.DB.Save(&inv)
+	result := global.DB.Save(&inv)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -60,8 +58,8 @@ func (i *InventoryServer) Sell(ctx context.Context, req *proto.SellInfo) (*empty
 
 	for _, info := range req.GoodsInvInfo {
 		var inv model.Inventory
-		result := global.DB.Where("goods = ?", info.GoodsId).First(&inv)
-		if result != nil || result.RowsAffected <= 0 {
+		result := global.DB.Where(&model.Inventory{Goods: info.GoodsId}).First(&inv)
+		if result.RowsAffected <= 0 {
 			tx.Rollback()
 			return nil, status.Errorf(codes.NotFound, "数据未找到")
 		}
@@ -87,7 +85,7 @@ func (i *InventoryServer) Reback(ctx context.Context, req *proto.SellInfo) (*emp
 	for _, info := range req.GoodsInvInfo {
 		var inv model.Inventory
 		result := global.DB.Where("goods = ?", info.GoodsId).First(&inv)
-		if result != nil || result.RowsAffected <= 0 {
+		if result.RowsAffected <= 0 {
 			tx.Rollback()
 			return nil, status.Errorf(codes.NotFound, "数据未找到")
 		}

@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"google.golang.org/grpc"
 	"shop-srvs/inventory_srv/proto/proto"
+	"sync"
 )
 
 var (
-	conn        *grpc.ClientConn
-	goodsClient proto.GoodsClient
+	conn            *grpc.ClientConn
+	inventoryClient proto.InventoryClient
 )
 
 func Init() {
@@ -18,45 +19,98 @@ func Init() {
 	if err != nil {
 		panic(err)
 	}
-	goodsClient = proto.NewGoodsClient(conn)
+	inventoryClient = proto.NewInventoryClient(conn)
 }
 
-func main() {
-	Init()
-
-	//list, err := userClient.CreateUser(context.Background(), &proto.CreateUserInfo{
-	//	Mobile:   "15700188888",
-	//	NickName: "Cowboy",
-	//	PassWord: "123456",
-	//})
-
-	list, err := goodsClient.BrandList(context.Background(), &proto.BrandFilterRequest{
-		Pages:       1,
-		PagePerNums: 10,
+func TestSetInv(GoodsId int32) {
+	_, err := inventoryClient.SetInv(context.Background(), &proto.GoodsInvInfo{
+		GoodsId: GoodsId,
+		Num:     100,
 	})
-
-	//list, err := userClient.GetUserByMobile(context.Background(), &proto.MobileRequest{Mobile: "15700188888 "})
-
-	//list, err := userClient.GetUserById(context.Background(), &proto.IdRequest{Id: 2})
-
-	//list, err := userClient.UpdateUser(context.Background(), &proto.UpdateUserInfo{
-	//	Id:       1,
-	//	NickName: "gopher",
-	//	BirthDay: uint32(time.Now().Unix()),
-	//	Gender:   1,
-	//})
-
-	//list, err := userClient.CheckPassWord(context.Background(), &proto.PasswordCheckInfo{
-	//	PassWord:          "212112",
-	//	EncryptedPassWord: "pbkdf2-sha512$oVj8oVEEQb062eBA$7ab8439632fbb75e9fd50390d7cb3d2d1affcb5b03a4983e879e0913a28b9156",
-	//})
 
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(1111)
-	fmt.Println(list)
-	err = conn.Close()
+
+	fmt.Println(GoodsId)
+}
+
+func TestInvDetail() {
+	res, err := inventoryClient.InvDetail(context.Background(), &proto.GoodsInvInfo{
+		GoodsId: 421,
+		Num:     100,
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(res)
+}
+
+func TestSell(wg *sync.WaitGroup) {
+	defer wg.Done()
+
+	_, err := inventoryClient.Sell(context.Background(), &proto.SellInfo{
+		GoodsInvInfo: []*proto.GoodsInvInfo{
+			{
+				GoodsId: 421,
+				Num:     1,
+			},
+		},
+		GoodsSn: "",
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(111)
+}
+
+func TestReBack() {
+	res, err := inventoryClient.Reback(context.Background(), &proto.SellInfo{
+		GoodsInvInfo: []*proto.GoodsInvInfo{
+			{
+				GoodsId: 421,
+				Num:     10,
+			},
+			{
+				GoodsId: 422,
+				Num:     20,
+			},
+		},
+		GoodsSn: "",
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(res)
+}
+func main() {
+	Init()
+
+	//TestSetInv(421)
+
+	//TestInvDetail()
+
+	//TestSell()
+
+	//TestReBack()
+
+	wg := sync.WaitGroup{}
+
+	wg.Add(30)
+
+	for i := 0; i < 30; i++ {
+		go TestSell(&wg)
+	}
+
+	wg.Wait()
+
+	err := conn.Close()
 	if err != nil {
 		return
 	}
