@@ -6,9 +6,9 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"shop-srvs/goods_srv/utils/register/consul"
 	"shop-srvs/user_srv/global"
 	"shop-srvs/user_srv/utils"
+	"shop-srvs/user_srv/utils/register/consul"
 	"syscall"
 
 	uuid "github.com/satori/go.uuid"
