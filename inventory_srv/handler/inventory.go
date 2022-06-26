@@ -54,10 +54,49 @@ func (i *InventoryServer) InvDetail(ctx context.Context, req *proto.GoodsInvInfo
 	}, nil
 }
 
-func (i *InventoryServer) Sell(context.Context, *proto.SellInfo) (*emptypb.Empty, error) {
-	return nil, nil
+//用户下单扣减库存
+func (i *InventoryServer) Sell(ctx context.Context, req *proto.SellInfo) (*emptypb.Empty, error) {
+	tx := global.DB.Begin()
+
+	for _, info := range req.GoodsInvInfo {
+		var inv model.Inventory
+		result := global.DB.Where("goods = ?", info.GoodsId).First(&inv)
+		if result != nil || result.RowsAffected <= 0 {
+			tx.Rollback()
+			return nil, status.Errorf(codes.NotFound, "数据未找到")
+		}
+
+		if inv.Stocks < info.Num {
+			tx.Rollback()
+			return nil, status.Errorf(codes.InvalidArgument, "库存不足")
+		}
+
+		inv.Stocks -= info.Num
+
+		tx.Save(&inv)
+	}
+
+	tx.Commit()
+	return &emptypb.Empty{}, nil
 }
 
-func (i *InventoryServer) Reback(context.Context, *proto.SellInfo) (*emptypb.Empty, error) {
-	return nil, nil
+//库存归还 订单超时归还
+func (i *InventoryServer) Reback(ctx context.Context, req *proto.SellInfo) (*emptypb.Empty, error) {
+	tx := global.DB.Begin()
+
+	for _, info := range req.GoodsInvInfo {
+		var inv model.Inventory
+		result := global.DB.Where("goods = ?", info.GoodsId).First(&inv)
+		if result != nil || result.RowsAffected <= 0 {
+			tx.Rollback()
+			return nil, status.Errorf(codes.NotFound, "数据未找到")
+		}
+
+		inv.Stocks += info.Num
+
+		tx.Save(&inv)
+	}
+
+	tx.Commit()
+	return &emptypb.Empty{}, nil
 }
