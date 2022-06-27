@@ -6,9 +6,9 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"shop-srvs/inventory_srv/global"
-	"shop-srvs/inventory_srv/utils"
-	consul "shop-srvs/inventory_srv/utils/register/consul"
+	"shop-srvs/order_srv/global"
+	"shop-srvs/order_srv/utils"
+	"shop-srvs/order_srv/utils/register/consul"
 	"syscall"
 
 	uuid "github.com/satori/go.uuid"
@@ -17,21 +17,21 @@ import (
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
 
-	"shop-srvs/inventory_srv/handler"
-	"shop-srvs/inventory_srv/initialize"
-	"shop-srvs/inventory_srv/proto/proto"
+	"shop-srvs/order_srv/handler"
+	"shop-srvs/order_srv/initialize"
+	"shop-srvs/order_srv/proto/proto"
 )
 
 func main() {
 	ip := flag.String("ip", "0.0.0.0", "IP地址")
-	port := flag.Int("port", 0, "端口号")
+	port := flag.Int("port", 50051, "端口号")
 
 	initialize.InitLogger()
 	initialize.InitConfig()
 	initialize.InitMysql()
 
 	server := grpc.NewServer()
-	proto.RegisterInventoryServer(server, &handler.InventoryServer{})
+	proto.RegisterOrderServer(server, &handler.OrderServer{})
 
 	if *port == 0 {
 		*port = utils.GetFreePort()
