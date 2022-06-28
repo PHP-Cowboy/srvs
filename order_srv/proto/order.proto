@@ -10,7 +10,7 @@ service Order {
   rpc UpdateCartItem(CartItemRequest) returns(google.protobuf.Empty); //修改购物车记录
 
   //订单
-  rpc Create(OrderRequest) returns (OrderInfoResponse); //创建订单
+  rpc CreateOrder(OrderRequest) returns (OrderInfoResponse); //创建订单
   rpc OrderList(OrderFilterRequest) returns (OrderListResponse); // 订单列表
   rpc OrderDetail(OrderRequest) returns (OrderInfoDetailResponse); // 订单详情
   rpc UpdateOrderStatus(OrderStatus) returns (google.protobuf.Empty); // 修改订单状态

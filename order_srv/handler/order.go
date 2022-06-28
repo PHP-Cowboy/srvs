@@ -101,7 +101,15 @@ func (*OrderServer) UpdateCartItem(ctx context.Context, req *proto.CartItemReque
 	return &emptypb.Empty{}, nil
 }
 
-func (*OrderServer) Create(ctx context.Context, req *proto.OrderRequest) (*proto.OrderInfoResponse, error) {
+func (*OrderServer) CreateOrder(ctx context.Context, req *proto.OrderRequest) (*proto.OrderInfoResponse, error) {
+	/*
+		新建订单
+		1. 从购物车中获取到选中的商品
+		2. 商品的价格自己查询 - 访问商品服务 (跨微服务)
+		3. 库存的扣减 - 访问库存服务 (跨微服务)
+		4. 订单的基本信息表 - 订单的商品信息表
+		5. 从购物车中删除已购买的记录
+	*/
 	return nil, nil
 }
 
