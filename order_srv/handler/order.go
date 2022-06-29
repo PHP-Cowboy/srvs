@@ -307,5 +307,15 @@ func (*OrderServer) OrderDetail(ctx context.Context, req *proto.OrderRequest) (*
 }
 
 func (*OrderServer) UpdateOrderStatus(ctx context.Context, req *proto.OrderStatus) (*emptypb.Empty, error) {
-	return nil, nil
+	result := global.DB.Model(&model.OrderInfo{}).Where("order_sn = ?", req.OrderSn).Update("status", req.Status)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	if result.RowsAffected < 1 {
+		return nil, status.Errorf(codes.Internal, "订单状态更新失败")
+	}
+
+	return &emptypb.Empty{}, nil
 }
