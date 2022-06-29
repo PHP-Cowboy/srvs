@@ -1,5 +1,9 @@
 package config
 
+type SrvConfig struct {
+	Name string `mapstructure:"name" json:"name"`
+}
+
 type MysqlConfig struct {
 	Host     string `mapstructure:"host" json:"host"`
 	Port     int    `mapstructure:"port" json:"port"`
@@ -14,11 +18,13 @@ type ConsulConfig struct {
 }
 
 type ServerConfig struct {
-	Host       string       `mapstructure:"host" json:"host"`
-	Name       string       `mapstructure:"name" json:"name"`
-	Tags       []string     `mapstructure:"tags" json:"tags"`
-	MysqlInfo  MysqlConfig  `mapstructure:"mysql" json:"mysql"`
-	ConsulInfo ConsulConfig `mapstructure:"consul" json:"consul"`
+	Host             string       `mapstructure:"host" json:"host"`
+	Name             string       `mapstructure:"name" json:"name"`
+	Tags             []string     `mapstructure:"tags" json:"tags"`
+	GoodsSrvInfo     SrvConfig    `mapstructure:"goods_srv" json:"goods_srv"`
+	InventorySrvInfo SrvConfig    `mapstructure:"inventory_srv" json:"inventory_srv"`
+	MysqlInfo        MysqlConfig  `mapstructure:"mysql" json:"mysql"`
+	ConsulInfo       ConsulConfig `mapstructure:"consul" json:"consul"`
 }
 
 type NacosConfig struct {

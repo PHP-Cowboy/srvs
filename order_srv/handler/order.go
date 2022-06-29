@@ -2,16 +2,27 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"math/rand"
 	"shop-srvs/order_srv/global"
 	"shop-srvs/order_srv/model"
 	"shop-srvs/order_srv/proto/proto"
+	"time"
 )
 
 type OrderServer struct {
 	proto.UnimplementedOrderServer
+}
+
+func GenderOrderSn(userId int32) string {
+	now := time.Now()
+
+	rand.Seed(now.UnixNano())
+
+	return fmt.Sprintf("%d%d%d%d%d%d%d%d", now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Nanosecond(), userId, rand.Intn(90)+10)
 }
 
 func (*OrderServer) CartItemList(ctx context.Context, req *proto.UserInfo) (*proto.CartItemListResponse, error) {
@@ -110,7 +121,95 @@ func (*OrderServer) CreateOrder(ctx context.Context, req *proto.OrderRequest) (*
 		4. 订单的基本信息表 - 订单的商品信息表
 		5. 从购物车中删除已购买的记录
 	*/
-	return nil, nil
+	var (
+		carts        []*model.ShoppingCart
+		cartNumsMap  = make(map[int32]int32)
+		goodsId      []int32
+		total        float32
+		orderGoods   []*model.OrderGoods
+		goodsInvInfo []*proto.GoodsInvInfo
+	)
+
+	db := global.DB
+	result := db.Where(&model.ShoppingCart{User: req.UserId, Checked: true}).Find(&carts)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	if result.RowsAffected <= 0 {
+		return nil, status.Errorf(codes.NotFound, "用户购物车数据未找到")
+	}
+
+	for _, cart := range carts {
+		goodsId = append(goodsId, cart.Goods)
+		cartNumsMap[cart.Goods] = cart.Nums
+	}
+
+	//商品服务中查询商品信息
+	goodsList, err := global.GoodsServer.BatchGetGoods(context.Background(), &proto.BatchGoodsIdInfo{Id: goodsId})
+	if err != nil {
+		return nil, err
+	}
+
+	for _, goods := range goodsList.Data {
+		total += goods.ShopPrice * float32(cartNumsMap[goods.Id])
+		orderGoods = append(orderGoods, &model.OrderGoods{
+			Goods:      goods.Id,
+			GoodsName:  goods.Name,
+			GoodsImage: goods.GoodsFrontImage,
+			GoodsPrice: goods.ShopPrice,
+			Nums:       cartNumsMap[goods.Id],
+		})
+
+		goodsInvInfo = append(goodsInvInfo, &proto.GoodsInvInfo{
+			GoodsId: goods.Id,
+			Num:     cartNumsMap[goods.Id],
+		})
+	}
+
+	//库存服务扣减库存
+	_, err = global.InventoryServer.Sell(context.Background(), &proto.SellInfo{
+		GoodsInvInfo: goodsInvInfo,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	orderInfo := &model.OrderInfo{
+		User:         req.UserId,
+		OrderSn:      GenderOrderSn(req.UserId),
+		OrderMount:   total,
+		Address:      req.Address,
+		SignerName:   req.Name,
+		SingerMobile: req.Mobile,
+		Post:         req.Post,
+	}
+
+	tx := db.Begin()
+
+	if result := tx.Save(&orderInfo); result.RowsAffected <= 0 {
+		tx.Rollback()
+		return nil, status.Errorf(codes.Internal, "订单数据保存失败")
+	}
+
+	for _, good := range orderGoods {
+		good.Order = orderInfo.ID
+	}
+
+	if result := tx.CreateInBatches(orderGoods, 100); result.RowsAffected <= 0 {
+		tx.Rollback()
+		return nil, status.Errorf(codes.Internal, "订单商品数据保存失败")
+	}
+
+	if result := tx.Where(&model.ShoppingCart{User: req.UserId, Checked: true}).Delete(model.ShoppingCart{}); result.RowsAffected <= 0 {
+		tx.Rollback()
+		return nil, status.Errorf(codes.Internal, "购物车数据删除失败")
+	}
+
+	tx.Commit()
+
+	return &proto.OrderInfoResponse{Id: orderInfo.ID, OrderSn: orderInfo.OrderSn, Total: total}, nil
 }
 
 func (*OrderServer) OrderList(ctx context.Context, req *proto.OrderFilterRequest) (*proto.OrderListResponse, error) {
