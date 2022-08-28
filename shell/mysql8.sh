@@ -25,6 +25,6 @@ mysql -uroot -p123456
 
 use mysql
 
-alter user 'root'@'localhost' identified by 'root';
+alter user 'root'@'localhost' identified by '8!yJRAJwhH6t2xaK';
 
 FLUSH PRIVILEGES;
