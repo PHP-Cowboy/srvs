@@ -5,12 +5,12 @@ import (
 	"errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"shop-srvs/inventory_srv/global"
-	"shop-srvs/inventory_srv/model"
+	"srvs/inventory_srv/global"
+	"srvs/inventory_srv/model"
 
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	"shop-srvs/inventory_srv/proto/proto"
+	"srvs/inventory_srv/proto/proto"
 )
 
 type InventoryServer struct {
@@ -52,7 +52,7 @@ func (i *InventoryServer) InvDetail(ctx context.Context, req *proto.GoodsInvInfo
 	}, nil
 }
 
-//用户下单扣减库存
+// 用户下单扣减库存
 func (i *InventoryServer) Sell(ctx context.Context, req *proto.SellInfo) (*emptypb.Empty, error) {
 	tx := global.DB.Begin()
 
@@ -78,7 +78,7 @@ func (i *InventoryServer) Sell(ctx context.Context, req *proto.SellInfo) (*empty
 	return &emptypb.Empty{}, nil
 }
 
-//库存归还 订单超时归还
+// 库存归还 订单超时归还
 func (i *InventoryServer) Reback(ctx context.Context, req *proto.SellInfo) (*emptypb.Empty, error) {
 	tx := global.DB.Begin()
 

@@ -6,9 +6,9 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"shop-srvs/order_srv/global"
-	"shop-srvs/order_srv/utils"
-	"shop-srvs/order_srv/utils/register/consul"
+	"srvs/order_srv/global"
+	"srvs/order_srv/utils"
+	"srvs/order_srv/utils/register/consul"
 	"syscall"
 
 	uuid "github.com/satori/go.uuid"
@@ -17,9 +17,9 @@ import (
 	"google.golang.org/grpc/health"
 	"google.golang.org/grpc/health/grpc_health_v1"
 
-	"shop-srvs/order_srv/handler"
-	"shop-srvs/order_srv/initialize"
-	"shop-srvs/order_srv/proto/proto"
+	"srvs/order_srv/handler"
+	"srvs/order_srv/initialize"
+	"srvs/order_srv/proto/proto"
 )
 
 func main() {

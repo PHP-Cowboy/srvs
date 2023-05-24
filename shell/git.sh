@@ -10,7 +10,7 @@ mkdir www
 
 cd www
 
-git clone https://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@github.com/PHP-Cowboy/shop-srvs.git
+git clone https://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@github.com/PHP-Cowboy/srvs.git
 
-cd shop-srvs
+cd srvs
 

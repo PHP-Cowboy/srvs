@@ -5,13 +5,13 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"shop-srvs/goods_srv/global"
-	"shop-srvs/goods_srv/model"
+	"srvs/goods_srv/global"
+	"srvs/goods_srv/model"
 
-	"shop-srvs/goods_srv/proto/proto"
+	"srvs/goods_srv/proto/proto"
 )
 
-//品牌分类
+// 品牌分类
 func (s *GoodsServer) CategoryBrandList(c context.Context, req *proto.CategoryBrandFilterRequest) (*proto.CategoryBrandListResponse, error) {
 	var categoryBrands []model.GoodsCategoryBrand
 	categoryBrandListResponse := proto.CategoryBrandListResponse{}
@@ -44,7 +44,7 @@ func (s *GoodsServer) CategoryBrandList(c context.Context, req *proto.CategoryBr
 	return &categoryBrandListResponse, nil
 }
 
-//通过category获取brands
+// 通过category获取brands
 func (s *GoodsServer) GetCategoryBrandList(c context.Context, req *proto.CategoryInfoRequest) (*proto.BrandListResponse, error) {
 	brandListResponse := proto.BrandListResponse{}
 

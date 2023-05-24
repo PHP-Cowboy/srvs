@@ -2,8 +2,8 @@ package initialize
 
 import (
 	"fmt"
-	"shop-srvs/order_srv/global"
-	"shop-srvs/order_srv/proto/proto"
+	"srvs/order_srv/global"
+	"srvs/order_srv/proto/proto"
 
 	_ "github.com/mbobakov/grpc-consul-resolver" // It's important
 	"go.uber.org/zap"

@@ -5,13 +5,13 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"shop-srvs/goods_srv/global"
-	"shop-srvs/goods_srv/model"
+	"srvs/goods_srv/global"
+	"srvs/goods_srv/model"
 
-	"shop-srvs/goods_srv/proto/proto"
+	"srvs/goods_srv/proto/proto"
 )
 
-//轮播图
+// 轮播图
 func (s *GoodsServer) BannerList(context.Context, *emptypb.Empty) (*proto.BannerListResponse, error) {
 	banners := []model.Banner{}
 

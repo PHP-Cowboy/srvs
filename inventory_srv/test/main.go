@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
-	"shop-srvs/inventory_srv/proto/proto"
+	"srvs/inventory_srv/proto/proto"
 	"sync"
 )
 

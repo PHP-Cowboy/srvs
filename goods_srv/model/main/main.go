@@ -1,9 +1,9 @@
 package main
 
 import (
-	"shop-srvs/goods_srv/global"
-	"shop-srvs/goods_srv/initialize"
-	"shop-srvs/goods_srv/model"
+	"srvs/goods_srv/global"
+	"srvs/goods_srv/initialize"
+	"srvs/goods_srv/model"
 )
 
 func main() {

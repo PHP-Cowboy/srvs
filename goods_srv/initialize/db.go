@@ -11,7 +11,7 @@ import (
 	logger2 "gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 
-	"shop-srvs/goods_srv/global"
+	"srvs/goods_srv/global"
 )
 
 func InitMysql() {

@@ -6,13 +6,13 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"shop-srvs/goods_srv/global"
-	"shop-srvs/goods_srv/model"
+	"srvs/goods_srv/global"
+	"srvs/goods_srv/model"
 
-	"shop-srvs/goods_srv/proto/proto"
+	"srvs/goods_srv/proto/proto"
 )
 
-//商品分类
+// 商品分类
 func (s *GoodsServer) GetAllCategoryList(c context.Context, req *emptypb.Empty) (*proto.CategoryListResponse, error) {
 	var categorys []model.Category
 	global.DB.Where(&model.Category{Level: 1}).Preload("SubCategory.SubCategory").Find(&categorys)
@@ -20,7 +20,7 @@ func (s *GoodsServer) GetAllCategoryList(c context.Context, req *emptypb.Empty) 
 	return &proto.CategoryListResponse{JsonData: string(b)}, nil
 }
 
-//获取子分类
+// 获取子分类
 func (s *GoodsServer) GetSubCategory(c context.Context, req *proto.CategoryListRequest) (*proto.SubCategoryListResponse, error) {
 	categoryListResponse := proto.SubCategoryListResponse{}
 

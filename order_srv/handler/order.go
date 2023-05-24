@@ -7,9 +7,9 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"math/rand"
-	"shop-srvs/order_srv/global"
-	"shop-srvs/order_srv/model"
-	"shop-srvs/order_srv/proto/proto"
+	"srvs/order_srv/global"
+	"srvs/order_srv/model"
+	"srvs/order_srv/proto/proto"
 	"time"
 )
 

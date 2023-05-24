@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
-	"shop-srvs/goods_srv/proto/proto"
+	"srvs/goods_srv/proto/proto"
 )
 
 var (

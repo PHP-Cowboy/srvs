@@ -2,8 +2,8 @@ package global
 
 import (
 	"gorm.io/gorm"
-	"shop-srvs/order_srv/config"
-	"shop-srvs/order_srv/proto/proto"
+	"srvs/order_srv/config"
+	"srvs/order_srv/proto/proto"
 )
 
 var (

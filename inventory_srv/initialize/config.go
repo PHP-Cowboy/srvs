@@ -10,7 +10,7 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/vo"
 
-	"shop-srvs/inventory_srv/global"
+	"srvs/inventory_srv/global"
 )
 
 func InitConfig() {

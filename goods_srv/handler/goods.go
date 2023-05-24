@@ -8,9 +8,9 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 
-	"shop-srvs/goods_srv/global"
-	"shop-srvs/goods_srv/model"
-	"shop-srvs/goods_srv/proto/proto"
+	"srvs/goods_srv/global"
+	"srvs/goods_srv/model"
+	"srvs/goods_srv/proto/proto"
 )
 
 type GoodsServer struct {
@@ -112,7 +112,7 @@ func (s *GoodsServer) GoodsList(c context.Context, req *proto.GoodsFilterRequest
 	return goodsListResponse, nil
 }
 
-//现在用户提交订单有多个商品，你得批量查询商品的信息吧
+// 现在用户提交订单有多个商品，你得批量查询商品的信息吧
 func (s *GoodsServer) BatchGetGoods(c context.Context, req *proto.BatchGoodsIdInfo) (*proto.GoodsListResponse, error) {
 	goodsListResponse := &proto.GoodsListResponse{}
 	var goods []model.Goods
